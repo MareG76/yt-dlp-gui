@@ -1,6 +1,7 @@
 import customtkinter as ctk
 
 from core.analyzer import Analyzer
+from ui.components.video_card import VideoCard
 
 
 ctk.set_appearance_mode("dark")
@@ -18,19 +19,31 @@ class App(ctk.CTk):
         # Configure window grid
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
-
+        
+        self.analyzer = Analyzer()
+        
         self.create_sidebar()
         self.create_main_area()
 
     def create_sidebar(self):
-        self.sidebar = ctk.CTkFrame(self, width=220, corner_radius=0)
-        self.sidebar.grid(row=0, column=0, sticky="ns")
+        self.sidebar = ctk.CTkFrame(
+            self,
+            width=220,
+            corner_radius=0,
+        )
+
+        self.sidebar.grid(
+            row=0,
+            column=0,
+            sticky="ns",
+        )
 
         title = ctk.CTkLabel(
             self.sidebar,
             text="YT-DLP",
             font=("Segoe UI", 26, "bold"),
         )
+
         title.pack(pady=(30, 40))
 
         buttons = [
@@ -41,15 +54,17 @@ class App(ctk.CTk):
         ]
 
         for text in buttons:
-            btn = ctk.CTkButton(
+            button = ctk.CTkButton(
                 self.sidebar,
                 text=text,
                 width=170,
             )
-            btn.pack(pady=8)
+
+            button.pack(pady=8)
 
     def create_main_area(self):
         self.main = ctk.CTkFrame(self)
+
         self.main.grid(
             row=0,
             column=1,
@@ -63,6 +78,7 @@ class App(ctk.CTk):
             text="Download Video",
             font=("Segoe UI", 28, "bold"),
         )
+
         title.pack(anchor="w", pady=(20, 20))
 
         self.url = ctk.CTkEntry(
@@ -70,48 +86,28 @@ class App(ctk.CTk):
             height=42,
             placeholder_text="Paste a YouTube or video URL...",
         )
-        self.url.pack(fill="x", padx=20)
 
-        analyze = ctk.CTkButton(
+        self.url.pack(
+            fill="x",
+            padx=20,
+        )
+
+        analyze_button = ctk.CTkButton(
             self.main,
             text="Analyze Video",
             width=180,
             command=self.analyze_video,
         )
-        analyze.pack(pady=20)
 
-        # ---------- Video Information ----------
+        analyze_button.pack(pady=20)
 
-        self.info_frame = ctk.CTkFrame(self.main)
-        self.info_frame.pack(fill="x", padx=20, pady=20)
+        self.video_card = VideoCard(self.main)
 
-        self.title_label = ctk.CTkLabel(
-            self.info_frame,
-            text="Title: -",
-            anchor="w",
+        self.video_card.pack(
+            fill="x",
+            padx=20,
+            pady=20,
         )
-        self.title_label.pack(anchor="w", padx=15, pady=(15, 5))
-
-        self.channel_label = ctk.CTkLabel(
-            self.info_frame,
-            text="Channel: -",
-            anchor="w",
-        )
-        self.channel_label.pack(anchor="w", padx=15, pady=5)
-
-        self.duration_label = ctk.CTkLabel(
-            self.info_frame,
-            text="Duration: -",
-            anchor="w",
-        )
-        self.duration_label.pack(anchor="w", padx=15, pady=5)
-
-        self.date_label = ctk.CTkLabel(
-            self.info_frame,
-            text="Upload Date: -",
-            anchor="w",
-        )
-        self.date_label.pack(anchor="w", padx=15, pady=(5, 15))
 
     def analyze_video(self):
         url = self.url.get().strip()
@@ -120,26 +116,14 @@ class App(ctk.CTk):
             return
 
         try:
-            video = Analyzer().analyze(url)
+            video = self.analyzer.analyze(url)
 
-            self.title_label.configure(
-                text=f"Title: {video.title}"
-            )
+            self.video_card.show(video)
 
-            self.channel_label.configure(
-                text=f"Channel: {video.uploader}"
-            )
+        except Exception as error:
+            print(error)
 
-            self.duration_label.configure(
-                text=f"Duration: {video.duration_text}"
-            )
 
-            self.date_label.configure(
-                text=f"Upload Date: {video.upload_date_text}"
-            )
-
-        except Exception as e:
-            self.title_label.configure(text=f"Error: {e}")
-            self.channel_label.configure(text="")
-            self.duration_label.configure(text="")
-            self.date_label.configure(text="")
+if __name__ == "__main__":
+    app = App()
+    app.mainloop()

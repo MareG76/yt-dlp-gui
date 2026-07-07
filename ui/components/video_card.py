@@ -1,8 +1,9 @@
 import customtkinter as ctk
 
-from models.video_info import VideoInfo
 from customtkinter import CTkImage
 from PIL import Image
+
+from models.video_info import VideoInfo
 
 class VideoCard(ctk.CTkFrame):
     """Displays information about the analyzed video."""
@@ -90,19 +91,19 @@ class VideoCard(ctk.CTkFrame):
         
     def set_thumbnail(self, image: Image.Image | None):
 
-    if image is None:
-        self.thumbnail.configure(text="No Thumbnail")
-        return
+        if image is None:
+            self.thumbnail.configure(text="No Thumbnail")
+            return
 
-    image = image.resize((220, 124))
+        image = image.resize((220, 124))
 
-    self.thumbnail_image = CTkImage(
-        light_image=image,
-        dark_image=image,
-        size=(220, 124)
-    )
+        self.thumbnail_image = CTkImage(
+            light_image=image,
+            dark_image=image,
+            size=(220, 124)
+        )
 
-    self.thumbnail.configure(
-        image=self.thumbnail_image,
-        text=""
-    )    
+        self.thumbnail.configure(
+            image=self.thumbnail_image,
+            text=""
+        )    

@@ -1,6 +1,7 @@
 import customtkinter as ctk
 
 from core.analyzer import Analyzer
+from services.thumbnail_service import ThumbnailService
 from ui.components.video_card import VideoCard
 
 
@@ -16,12 +17,14 @@ class App(ctk.CTk):
         self.geometry("1200x750")
         self.minsize(1000, 650)
 
-        # Configure window grid
+        # Services
+        self.analyzer = Analyzer()
+        self.thumbnail_service = ThumbnailService()
+
+        # Configure layout
         self.grid_columnconfigure(1, weight=1)
         self.grid_rowconfigure(0, weight=1)
-        
-        self.analyzer = Analyzer()
-        
+
         self.create_sidebar()
         self.create_main_area()
 
@@ -118,6 +121,9 @@ class App(ctk.CTk):
         try:
             video = self.analyzer.analyze(url)
 
+            image = self.thumbnail_service.download(video.thumbnail)
+
+            self.video_card.set_thumbnail(image)
             self.video_card.show(video)
 
         except Exception as error:

@@ -1,7 +1,8 @@
 import customtkinter as ctk
 
 from models.video_info import VideoInfo
-
+from customtkinter import CTkImage
+from PIL import Image
 
 class VideoCard(ctk.CTkFrame):
     """Displays information about the analyzed video."""
@@ -14,9 +15,9 @@ class VideoCard(ctk.CTkFrame):
         # Thumbnail placeholder
         self.thumbnail = ctk.CTkLabel(
             self,
-            text="Thumbnail\ncoming soon",
-            width=180,
-            height=110,
+            text="",
+            width=220,
+            height=124,
         )
         self.thumbnail.grid(
             row=0,
@@ -86,3 +87,22 @@ class VideoCard(ctk.CTkFrame):
         self.channel.configure(text=f"Channel: {video.uploader}")
         self.duration.configure(text=f"Duration: {video.duration_text}")
         self.date.configure(text=f"Upload Date: {video.upload_date_text}")
+        
+    def set_thumbnail(self, image: Image.Image | None):
+
+    if image is None:
+        self.thumbnail.configure(text="No Thumbnail")
+        return
+
+    image = image.resize((220, 124))
+
+    self.thumbnail_image = CTkImage(
+        light_image=image,
+        dark_image=image,
+        size=(220, 124)
+    )
+
+    self.thumbnail.configure(
+        image=self.thumbnail_image,
+        text=""
+    )    

@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# VS Code
+.vscode/
+
+# Cursor
+.cursor/
+
+# IDEs
+.idea/
+
+# Build
+build/
+dist/
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
+.DS_Store
+
+# Downloads folder
+downloads/*
+
+# Keep the folder
+!downloads/.gitkeep
